@@ -4,13 +4,14 @@ let mongoose = require('mongoose');
 let router = express.Router();
 let Post = require('./models/post.js');
 let bodyParser = require('body-parser');
-
+const uristring = process.env.MONGODB_URI || 'mongodb://localhost/chatDB';
+const port = process.env.PORT || 3000;
 app.use(bodyParser.json());
 
 app.use('/api', router);
 
 
-mongoose.connect('mongodb://localhost/chatDB');
+mongoose.connect(uristring);
 
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
@@ -21,7 +22,7 @@ db.once('open', function () {
 
 router.post('/chat/newMsg', function (req, res) {
     let body = req.body;
-    let post = Post({
+    let post = new Post({
         author: body.author,
         post: body.post
     });
@@ -38,6 +39,6 @@ router.get('/chat/messages', function (req, res) {
 });
 
 
-app.listen(3000, function () {
-    console.log('listening on port 3000');
+app.listen(port, function () {
+    console.log('listening on port: ' + port);
 });
