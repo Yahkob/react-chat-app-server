@@ -1,16 +1,26 @@
 "use strict";
+const uristring = process.env.MONGODB_URI || 'mongodb://localhost/chatDB';
+const port = process.env.PORT || 3000;
 let express = require('express');
 let app = express();
 let mongoose = require('mongoose');
 let router = express.Router();
 let Post = require('./models/post.js');
 let bodyParser = require('body-parser');
-const uristring = process.env.MONGODB_URI || 'mongodb://localhost/chatDB';
-const port = process.env.PORT || 3000;
+let allowCrossDomain = function(req, res, next) {
+    res.header('Access-Control-Allow-Origin', 'example.com');
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+    res.header('Access-Control-Allow-Headers', 'Content-Type');
+
+    next();
+}
+
+
 app.use(bodyParser.json());
 
 app.use('/api', router);
 
+app.use(allowCrossDomain);
 
 mongoose.connect(uristring);
 
