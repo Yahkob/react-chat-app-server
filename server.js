@@ -15,7 +15,7 @@ app.use(function(req, res, next) {
   next();
 });
 
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
 
 app.use('/api', router);
 
@@ -26,13 +26,18 @@ db.on('error', console.error.bind(console, 'connection error:'));
 
 router.post('/chat/newMsg', (req, res) => {
     let {body: {author, post}} = req;
-    console.log(author,req.body, post);
     let message = new Message({
         author,
         post
     });
     message.save();
-    res.end('{"success" : "Posted Successfully", "status" : 200}');
+    res.setHeader('Content-Type', 'application/json');
+    res.end(JSON.stringify({
+        success : 'Posted Successfully',
+        status : 200,
+        _id: message._id,
+        createdOn: message.createdOn
+    }));
 });
 
 router.get('/chat/messages', (req, res) => {
