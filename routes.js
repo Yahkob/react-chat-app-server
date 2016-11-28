@@ -1,5 +1,6 @@
 "use strict";
 let Message = require('./models/message.js');
+
 module.exports = [
     {
         method: 'POST',
